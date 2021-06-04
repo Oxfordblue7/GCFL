@@ -97,7 +97,7 @@ def run_fedprox(clients, server, COMMUNICATION_ROUNDS, local_epoch, mu, samp=Non
     return frame
 
 
-def run_cfl(clients, server, COMMUNICATION_ROUNDS, local_epoch, EPS_1, EPS_2):
+def run_gcfl(clients, server, COMMUNICATION_ROUNDS, local_epoch, EPS_1, EPS_2):
     cluster_indices = [np.arange(len(clients)).astype("int")]
     client_clusters = [[clients[i] for i in idcs] for idcs in cluster_indices]
 
@@ -158,7 +158,7 @@ def run_cfl(clients, server, COMMUNICATION_ROUNDS, local_epoch, EPS_1, EPS_2):
     return frame
 
 
-def run_cfl_dtw(clients, server, COMMUNICATION_ROUNDS, local_epoch, EPS_1, EPS_2, standardize):
+def run_gcfl_dtw(clients, server, COMMUNICATION_ROUNDS, local_epoch, EPS_1, EPS_2, standardize):
     cluster_indices = [np.arange(len(clients)).astype("int")]
     client_clusters = [[clients[i] for i in idcs] for idcs in cluster_indices]
 
@@ -228,7 +228,7 @@ def run_cfl_dtw(clients, server, COMMUNICATION_ROUNDS, local_epoch, EPS_1, EPS_2
     return frame
 
 
-def run_cfl_dtw_dWs(clients, server, COMMUNICATION_ROUNDS, local_epoch, EPS_1, EPS_2, standardize):
+def run_gcfl_dtw_dWs(clients, server, COMMUNICATION_ROUNDS, local_epoch, EPS_1, EPS_2, standardize):
     cluster_indices = [np.arange(len(clients)).astype("int")]
     client_clusters = [[clients[i] for i in idcs] for idcs in cluster_indices]
 

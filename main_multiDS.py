@@ -63,7 +63,7 @@ def process_gcfl():
     else:
         outfile = os.path.join(outpath, args.data_group, "repeats", f'{args.repeat}_accuracy_gcfl{suffix}.csv')
 
-    frame = run_cfl(clients, server, args.num_rounds, args.local_epoch, EPS_1, EPS_2)
+    frame = run_gcfl(clients, server, args.num_rounds, args.local_epoch, EPS_1, EPS_2)
     frame.to_csv(outfile)
     print(f"Wrote to: {outfile}")
 
@@ -77,7 +77,7 @@ def process_gcfl_dtw():
     else:
         outfile = os.path.join(outpath, args.data_group, "repeats", f'{args.repeat}_accuracy_gcfldtw{suffix}.csv')
 
-    frame = run_cfl_dtw(clients, server, args.num_rounds, args.local_epoch, EPS_1, EPS_2, args.standardize)
+    frame = run_gcfl_dtw(clients, server, args.num_rounds, args.local_epoch, EPS_1, EPS_2, args.standardize)
     frame.to_csv(outfile)
     print(f"Wrote to: {outfile}")
 
@@ -91,7 +91,7 @@ def process_gcfl_dtw_dWs():
     else:
         outfile = os.path.join(outpath, args.data_group, "repeats", f'{args.repeat}_accuracy_gcfldtwDWs{suffix}.csv')
 
-    frame = run_cfl_dtw_dWs(clients, server, args.num_rounds, args.local_epoch, EPS_1, EPS_2, args.standardize)
+    frame = run_gcfl_dtw_dWs(clients, server, args.num_rounds, args.local_epoch, EPS_1, EPS_2, args.standardize)
     frame.to_csv(outfile)
     print(f"Wrote to: {outfile}")
 
@@ -124,7 +124,7 @@ if __name__ == '__main__':
     parser.add_argument('--repeat', help='index of repeating;',
                         type=int, default=None)
     parser.add_argument('--data_group', help='specify the group of datasets',
-                        type=str, default='small')
+                        type=str, default='mix')
 
     parser.add_argument('--convert_x', help='whether to convert original node features to one-hot degree features',
                         type=bool, default=False)
