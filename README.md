@@ -44,7 +44,7 @@ After aggregating, the two final files are ___avg_accuracy_allAlgos.csv___ and _
 python main_oneDS.py --data_group {dataset} --num_clients {numClients}
 ```
 
-(2) For multiple datasets, each client own one dataset (datagroups are pre-defined in ___setupGC.py___):
+(2) For multiple datasets, each client owns one dataset (datagroups are pre-defined in ___setupGC.py___):
 
 ```
 python main_multiDS.py --data_group {datagroup}
