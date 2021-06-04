@@ -17,7 +17,7 @@ def _aggregate(inpath, outpath, filename):
     df_out.to_csv(os.path.join(outpath, filename), header=True, index=True)
 
 
-def _aggregate_cfl(inpath, outpath, filename):
+def _aggregate_gcfl(inpath, outpath, filename):
     dfs = []
     for file in os.listdir(inpath):
         if file.endswith(filename):
@@ -75,7 +75,7 @@ def main_aggregate(inbase='./outputs', outbase='./outputs'):
         for filename in ['accuracy_selftrain.csv', 'accuracy_fedavg.csv', 'accuracy_fedprox_mu0.01.csv']:
             _aggregate(inpath, outpath, filename)
         for filename in ['accuracy_gcfl.csv', 'accuracy_gcfldtw.csv', 'accuracy_gcfldtwDWs.csv']:
-            _aggregate_cfl(inpath, outpath, filename)
+            _aggregate_gcfl(inpath, outpath, filename)
 
         average_aggregate_all(outpath, outpath, '')
 
@@ -89,7 +89,7 @@ def main_aggregate(inbase='./outputs', outbase='./outputs'):
         for filename in ['accuracy_selftrain.csv', 'accuracy_fedavg.csv', 'accuracy_fedprox_mu0.01.csv']:
             _aggregate(inpath, outpath, filename)
         for filename in ['accuracy_gcfl.csv', 'accuracy_gcfldtw.csv', 'accuracy_gcfldtwDWs.csv']:
-            _aggregate_cfl(inpath, outpath, filename)
+            _aggregate_gcfl(inpath, outpath, filename)
 
         average_aggregate_all(outpath, outpath, '')
 
