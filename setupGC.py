@@ -47,7 +47,7 @@ def prepareData_oneDS(datapath, data, num_client, batchSize, convert_x=False, se
             maxdegree = get_maxDegree(tudataset)
             tudataset = TUDataset(f"{datapath}/TUDataset", data, transform=OneHotDegree(maxdegree, cat=False))
     graphs = [x for x in tudataset]
-    print("\t", data, len(graphs))
+    print("  **", data, len(graphs))
 
     graphs_chunks = _randChunk(graphs, num_client, overlap, seed=seed)
     splitedData = {}
@@ -58,7 +58,6 @@ def prepareData_oneDS(datapath, data, num_client, batchSize, convert_x=False, se
         ds_tvt = chunks
         ds_train, ds_vt = split_data(ds_tvt, train=0.8, test=0.2, shuffle=True, seed=seed)
         ds_val, ds_test = split_data(ds_vt, train=0.5, test=0.5, shuffle=True, seed=seed)
-        print(ds, f"train: {len(ds_train)}", f"val: {len(ds_val)}", f"test: {len(ds_test)}")
         dataloader_train = DataLoader(ds_train, batch_size=batchSize, shuffle=True)
         dataloader_val = DataLoader(ds_val, batch_size=batchSize, shuffle=True)
         dataloader_test = DataLoader(ds_test, batch_size=batchSize, shuffle=True)
@@ -66,7 +65,6 @@ def prepareData_oneDS(datapath, data, num_client, batchSize, convert_x=False, se
         splitedData[ds] = ({'train': dataloader_train, 'val': dataloader_val, 'test': dataloader_test},
                            num_node_features, num_graph_labels, len(ds_train))
         df = get_stats(df, ds, ds_train, graphs_val=ds_val, graphs_test=ds_test)
-    print(df)
 
     return splitedData, df
 
@@ -102,7 +100,7 @@ def prepareData_multiDS(datapath, group='small', batchSize=32, convert_x=False, 
                 tudataset = TUDataset(f"{datapath}/TUDataset", data, transform=OneHotDegree(maxdegree, cat=False))
 
         graphs = [x for x in tudataset]
-        print("\t", data, len(graphs))
+        print("  **", data, len(graphs))
 
         graphs_train, graphs_valtest = split_data(graphs, test=0.2, shuffle=True, seed=seed)
         graphs_val, graphs_test = split_data(graphs_valtest, train=0.5, test=0.5, shuffle=True, seed=seed)
@@ -110,7 +108,6 @@ def prepareData_multiDS(datapath, group='small', batchSize=32, convert_x=False, 
             graphs, _ = split_data(graphs, train=150, shuffle=True, seed=seed)
             graphs_train, graphs_valtest = split_data(graphs, test=0.2, shuffle=True, seed=seed)
             graphs_val, graphs_test = split_data(graphs_valtest, train=0.5, test=0.5, shuffle=True, seed=seed)
-        print("  ", data, f"train: {len(graphs_train)}", f"val: {len(graphs_val)}", f"test: {len(graphs_test)}")
 
         num_node_features = graphs[0].num_node_features
         num_graph_labels = get_numGraphLabels(graphs_train)
@@ -123,7 +120,6 @@ def prepareData_multiDS(datapath, group='small', batchSize=32, convert_x=False, 
                              num_node_features, num_graph_labels, len(graphs_train))
 
         df = get_stats(df, data, graphs_train, graphs_val=graphs_val, graphs_test=graphs_test)
-    print(df)
     return splitedData, df
 
 

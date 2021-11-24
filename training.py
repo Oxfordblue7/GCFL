@@ -14,7 +14,7 @@ def run_selftrain_GC(clients, server, local_epoch):
 
         loss, acc = client.evaluate()
         allAccs[client.name] = [client.train_stats['trainingAccs'][-1], client.train_stats['valAccs'][-1], acc]
-        print("\t{} done.".format(client.name))
+        print("  > {} done.".format(client.name))
 
     return allAccs
 
@@ -29,7 +29,7 @@ def run_fedavg(clients, server, COMMUNICATION_ROUNDS, local_epoch, samp=None, fr
 
     for c_round in range(1, COMMUNICATION_ROUNDS + 1):
         if (c_round) % 50 == 0:
-            print(f"\t> round {c_round}")
+            print(f"  > round {c_round}")
 
         if c_round == 1:
             selected_clients = clients
@@ -70,7 +70,7 @@ def run_fedprox(clients, server, COMMUNICATION_ROUNDS, local_epoch, mu, samp=Non
 
     for c_round in range(1, COMMUNICATION_ROUNDS + 1):
         if (c_round) % 50 == 0:
-            print(f"\t> round {c_round}")
+            print(f"  > round {c_round}")
 
         if c_round == 1:
             selected_clients = clients
@@ -107,7 +107,7 @@ def run_gcfl(clients, server, COMMUNICATION_ROUNDS, local_epoch, EPS_1, EPS_2):
 
     for c_round in range(1, COMMUNICATION_ROUNDS + 1):
         if (c_round) % 50 == 0:
-            print(f"round {c_round}")
+            print(f"  > round {c_round}")
         if c_round == 1:
             for client in clients:
                 client.download_from_server(server)
@@ -148,7 +148,6 @@ def run_gcfl(clients, server, COMMUNICATION_ROUNDS, local_epoch, EPS_1, EPS_2):
     frame = pd.DataFrame(results, columns=["FL Model"] + ["Model {}".format(i)
                                                           for i in range(results.shape[1] - 1)],
                          index=["{}".format(clients[i].name) for i in range(results.shape[0])])
-    print(frame)
     frame = pd.DataFrame(frame.max(axis=1))
     frame.columns = ['test_acc']
     print(frame)
@@ -166,7 +165,7 @@ def run_gcflplus(clients, server, COMMUNICATION_ROUNDS, local_epoch, EPS_1, EPS_
 
     for c_round in range(1, COMMUNICATION_ROUNDS + 1):
         if (c_round) % 50 == 0:
-            print(f"round {c_round}")
+            print(f"  > round {c_round}")
         if c_round == 1:
             for client in clients:
                 client.download_from_server(server)
@@ -215,12 +214,9 @@ def run_gcflplus(clients, server, COMMUNICATION_ROUNDS, local_epoch, EPS_1, EPS_
                                                           for i in range(results.shape[1] - 1)],
                          index=["{}".format(clients[i].name) for i in range(results.shape[0])])
 
-    def highlight_max(s):
-        is_max = s == s.max()
-        return ['font-weight: bold' if v else '' for v in is_max]
-
-    fs = frame.T.style.apply(highlight_max).data
-    print(fs)
+    frame = pd.DataFrame(frame.max(axis=1))
+    frame.columns = ['test_acc']
+    print(frame)
 
     return frame
 
@@ -235,7 +231,7 @@ def run_gcflplus_dWs(clients, server, COMMUNICATION_ROUNDS, local_epoch, EPS_1, 
 
     for c_round in range(1, COMMUNICATION_ROUNDS + 1):
         if (c_round) % 50 == 0:
-            print(f"round {c_round}")
+            print(f"  > round {c_round}")
         if c_round == 1:
             for client in clients:
                 client.download_from_server(server)
@@ -260,7 +256,6 @@ def run_gcflplus_dWs(clients, server, COMMUNICATION_ROUNDS, local_epoch, EPS_1, 
                 tmp = [seqs_grads[id][-seq_length:] for id in idc]
                 dtw_distances = server.compute_pairwise_distances(tmp, standardize)
                 c1, c2 = server.min_cut(np.max(dtw_distances)-dtw_distances, idc)
-                print("c1", c1, " c2", c2)
                 cluster_indices_new += [c1, c2]
 
                 seqs_grads = {c.id: [] for c in clients}
@@ -284,12 +279,8 @@ def run_gcflplus_dWs(clients, server, COMMUNICATION_ROUNDS, local_epoch, EPS_1, 
     frame = pd.DataFrame(results, columns=["FL Model"] + ["Model {}".format(i)
                                                           for i in range(results.shape[1] - 1)],
                          index=["{}".format(clients[i].name) for i in range(results.shape[0])])
-
-    def highlight_max(s):
-        is_max = s == s.max()
-        return ['font-weight: bold' if v else '' for v in is_max]
-
-    fs = frame.T.style.apply(highlight_max).data
-    print(fs)
+    frame = pd.DataFrame(frame.max(axis=1))
+    frame.columns = ['test_acc']
+    print(frame)
 
     return frame
