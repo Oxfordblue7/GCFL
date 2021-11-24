@@ -117,6 +117,10 @@ if __name__ == '__main__':
     parser.add_argument('--seed', help='seed for randomness;',
                         type=int, default=123)
 
+    parser.add_argument('--datapath', type=str, default='./data',
+                        help='The input path of data.')
+    parser.add_argument('--oubase', type=str, default='./outputs',
+                        help='The base path for outputting.')
     parser.add_argument('--repeat', help='index of repeating;',
                         type=int, default=None)
     parser.add_argument('--data_group', help='specify the group of datasets',
@@ -155,9 +159,7 @@ if __name__ == '__main__':
     EPS_1 = args.epsilon1
     EPS_2 = args.epsilon2
 
-    # TODO: change the data input path and output path
-    datapath = "/local/scratch/hxie45/scripts/GCFL/data/"
-    outbase = f'/local/scratch/hxie45/scripts/GCFL/outputs/seqLen{args.seq_length}'
+    outbase = os.path.join(args.outbase, f'seqLen{args.seq_length}')
     if args.overlap and args.standardize:
         outpath = os.path.join(outbase, f"standardizedDTW/oneDS-overlap")
     elif args.overlap:
@@ -184,7 +186,7 @@ if __name__ == '__main__':
     if args.repeat is not None:
         Path(os.path.join(outpath, 'repeats')).mkdir(parents=True, exist_ok=True)
 
-    splitedData, df_stats = setupGC.prepareData_oneDS(datapath, args.data_group, num_client=args.num_clients, batchSize=args.batch_size,
+    splitedData, df_stats = setupGC.prepareData_oneDS(args.datapath, args.data_group, num_client=args.num_clients, batchSize=args.batch_size,
                                                       convert_x=args.convert_x, seed=seed_dataSplit, overlap=args.overlap)
     print("Done")
 
