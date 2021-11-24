@@ -148,13 +148,10 @@ def run_gcfl(clients, server, COMMUNICATION_ROUNDS, local_epoch, EPS_1, EPS_2):
     frame = pd.DataFrame(results, columns=["FL Model"] + ["Model {}".format(i)
                                                           for i in range(results.shape[1] - 1)],
                          index=["{}".format(clients[i].name) for i in range(results.shape[0])])
-
-    def highlight_max(s):
-        is_max = s == s.max()
-        return ['font-weight: bold' if v else '' for v in is_max]
-
-    fs = frame.T.style.apply(highlight_max).data
-    print(fs)
+    print(frame)
+    frame = pd.DataFrame(frame.max(axis=1))
+    frame.columns = ['test_acc']
+    print(frame)
 
     return frame
 

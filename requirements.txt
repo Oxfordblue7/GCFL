@@ -2,11 +2,11 @@ numpy
 pandas
 sklearn
 dtaidistance
-torch==1.9.1
-torchvision==0.10.1
-torchaudio==0.9.1
-torch-scatter -f https://data.pyg.org/whl/torch-1.9.1+cu111.html
-torch-sparse -f https://data.pyg.org/whl/torch-1.9.1+cu111.html
-torch-cluster -f https://data.pyg.org/whl/torch-1.9.1+cu111.html
-torch-spline-conv -f https://data.pyg.org/whl/torch-1.9.1+cu111.html
-torch-geometric
+torch==1.8.0
+torchvision==0.9.0
+torchaudio==0.8.0
+torch-scatter -f https://pytorch-geometric.com/whl/torch-1.8.0+cu111.html
+torch-sparse -f https://pytorch-geometric.com/whl/torch-1.8.0+cu111.html
+torch-cluster -f https://pytorch-geometric.com/whl/torch-1.8.0+cu111.html
+torch-spline-conv -f https://pytorch-geometric.com/whl/torch-1.8.0+cu111.html
+torch-geometric -f https://pytorch-geometric.com/whl/torch-1.8.0+cu111.html
