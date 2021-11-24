@@ -1,4 +1,5 @@
 import os
+import argparse
 import pandas as pd
 from pathlib import Path
 
@@ -116,21 +117,30 @@ def main_aggregate_all_oneDS(inbase, outbase, datagroups, suffix):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--inbase', type=str, default='./outputs',
+                        help='The in base path of the outputs.')
+    parser.add_argument('--outbase', type=str, default='./outputs',
+                        help='The base path for outputting.')
+    parser.add_argument('--seq_length', help='the length of the gradient norm sequence',
+                        type=int, default=5)
+
+    try:
+        args = parser.parse_args()
+    except IOError as msg:
+        parser.error(str(msg))
+
+
     """ multiDS: aggregagte all outputs """
-    inbase = f'/homelocal/hxie45/outputs/final3/seqLen{seq_len}/'
-    outbase = f'/home/hxie45/priv/project/outputs/remote/final3/seqLen{seq_len}/'
-    datagroups = [('molecules', 'eps_0.07_0.35'),
-                  ('molecules', 'eps_0.07_0.28'), ('molecules', 'eps_0.08_0.32'), ('molecules', 'eps_0.09_0.36'), ('molecules', 'eps_0.1_0.4'),
-                  ('biochem', 'eps_0.06_0.3'), ('biochem', 'eps_0.07_0.35'), ('biochem', 'eps_0.08_0.4'), ('biochem', 'eps_0.09_0.45'),
-                  ('mix', 'eps_0.07_0.35'), ('mix', 'eps_0.08_0.4'), ('mix', 'eps_0.09_0.45'), ('mix', 'eps_0.1_0.5')]
-    main_aggregate_all_multiDS(inbase, outbase, datagroups, '')
-    # main_aggregate_all_multiDS(inbase, outbase, datagroups, '_degrs')
+    datagroups = [('molecules', 'eps_0.07_0.28'),
+                  ('biochem', 'eps_0.07_0.35'),
+                  ('mix', 'eps_0.08_0.4')]
+    main_aggregate_all_multiDS(os.path.join(args.inbase, args.seq_length), os.path.join(args.outbase, args.seq_length), datagroups, '')
+    # main_aggregate_all_multiDS(os.path.join(args.inbase, args.seq_length), os.path.join(args.outbase, args.seq_length), datagroups, '_degrs')
 
     """ oneDS: aggregagte all outputs """
-    inbase = f'/local/scratch/hxie45/outputs/GCFL/seqLen{seq_len}/{overlap}/'
-    outbase = f'/home/hxie45/priv/project/outputs/remote/final3/seqLen{seq_len}/{overlap}/'
-    datagroups = [('NCI1-30clients', 'eps_0.04_0.08'), ('NCI1-30clients', 'eps_0.05_0.1'), ('NCI1-30clients', 'eps_0.06_0.1'), ('NCI1-30clients', 'eps_0.07_0.13'),
-                  ('PROTEINS-10clients', 'eps_0.03_0.06'), ('PROTEINS-10clients', 'eps_0.04_0.07'), ('PROTEINS-10clients', 'eps_0.045_0.075'),
-                  ('IMDB-BINARY-10clients', 'eps_0.025_0.045'), ('IMDB-BINARY-10clients', 'eps_0.03_0.05'), ('IMDB-BINARY-10clients', 'eps_0.035_0.06')]
-    main_aggregate_all_oneDS(inbase, outbase, datagroups, '')
-    # main_aggregate_all_oneDS(inbase, outbase, datagroups, '_degrs')
+    datagroups = [('NCI1-30clients', 'eps_0.04_0.08'),
+                  ('PROTEINS-10clients', 'eps_0.03_0.06'),
+                  ('IMDB-BINARY-10clients', 'eps_0.025_0.045')]
+    main_aggregate_all_oneDS(os.path.join(args.inbase, args.seq_length), os.path.join(args.outbase, args.seq_length), datagroups, '')
+    # main_aggregate_all_oneDS(os.path.join(args.inbase, args.seq_length), os.path.join(args.outbase, args.seq_length), datagroups, '_degrs')

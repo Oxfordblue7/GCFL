@@ -21,7 +21,7 @@ bash runnerfile
 To averagely aggregate all repetitions:
 
 ```
-python aggregateResults.py
+python aggregateResults.py --inbase {in_base_path} --outbase {out_base_path} --seq_length {the length of gradient norm sequence}
 ```
 
 Or, to run one file to get all repetitions also aggregate the results:
@@ -41,13 +41,13 @@ After aggregating, the two final files are ___avg_accuracy_allAlgos.csv___ and _
 (1) Distributing one dataset to a number of clients:
 
 ```
-python main_oneDS.py --data_group {dataset} --num_clients {numClients}
+python main_oneDS.py --repeat {index of the repeat} --data_group {dataset} --num_clients {num of clients} --seed {random seed}  --epsilon1 {epsilon_1} --epsilon2 {epsilon_2} --seq_length {the length of gradient norm sequence}
 ```
 
 (2) For multiple datasets, each client owns one dataset (datagroups are pre-defined in ___setupGC.py___):
 
 ```
-python main_multiDS.py --data_group {datagroup}
+python main_multiDS.py --repeat {index of the repeat} --data_group {datagroup} --seed {random seed} --epsilon1 {epsilon_1} --epsilon2 {epsilon_2} --seq_length {the length of gradient norm sequence}
 ```
 
 *Note: There are various arguments can be defined for different settings. If the arguments 'data_path' and 'outbase' are not specified, datasets will be downloaded in './data' and outputs will be stored in './outputs' by default.

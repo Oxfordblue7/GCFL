@@ -156,8 +156,8 @@ if __name__ == '__main__':
     EPS_2 = args.epsilon2
 
     # TODO: change the data input path and output path
-    datapath = "/local/scratch/hxie45/data/"
-    outbase = f'/local/scratch/hxie45/outputs/GCFL/test/seqLen{args.seq_length}'
+    datapath = "/local/scratch/hxie45/scripts/GCFL/data/"
+    outbase = f'/local/scratch/hxie45/scripts/GCFL/outputs/seqLen{args.seq_length}'
     if args.overlap and args.standardize:
         outpath = os.path.join(outbase, f"standardizedDTW/oneDS-overlap")
     elif args.overlap:
