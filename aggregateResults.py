@@ -16,21 +16,6 @@ def _aggregate(inpath, outpath, filename):
     df_out = dfmean.join(dfstd, lsuffix='_mean', rsuffix='_std')
     df_out.to_csv(os.path.join(outpath, filename), header=True, index=True)
 
-def _aggregate_cfl(inpath, outpath, filename):
-    dfs = []
-    for file in os.listdir(inpath):
-        if file.endswith(filename):
-            tmp = pd.read_csv(os.path.join(inpath, file), header=0, index_col=0)
-            tmp = pd.DataFrame(tmp.max(axis=1))
-            tmp.columns = ['test_acc']
-            dfs.append(tmp)
-
-    df = pd.concat(dfs)
-    group = df.groupby(df.index)
-    dfmean = group.mean()
-    dfstd = group.std()
-    df_out = dfmean.join(dfstd, lsuffix='_mean', rsuffix='_std')
-    df_out.to_csv(os.path.join(outpath, filename), header=True, index=True)
 
 def calc_performanceGain(inpath, suffix):
     df_self = pd.read_csv(os.path.join(inpath, f"accuracy_selftrain_GC{suffix}.csv"), header=0, index_col=0)
@@ -48,7 +33,7 @@ def calc_performanceGain(inpath, suffix):
         df_stats.loc[algo, 'min_performanceGain'] = df_diff.min().values[0]
         df_stats.loc[algo, 'perc_improved'] = df_diff[df_diff['test_acc_mean'] >= 0].count().values[0] * 1. / len(df_diff)
         df_stats.loc[algo, 'ratio'] = '{}/{}'.format(df_diff[df_diff['test_acc_mean'] >= 0].count().values[0], len(df_diff))
-    print(df_stats)
+    print(f"Performance Gain:\ndf_stats")
     df_stats.to_csv(os.path.join(inpath, f"stats_performanceGain_GC{suffix}.csv"), header=True, index=True)
 
 def average_aggregate_all(inpath, outpath, suffix):
@@ -59,88 +44,58 @@ def average_aggregate_all(inpath, outpath, suffix):
         if algo == 'selftrain':
             df = df[['test_acc_mean', 'test_acc_std']]
         dfs.loc[algo] = list(df.mean())
-    # print(dfs)
     outfile = os.path.join(outpath, f'avg_accuracy_allAlgos_GC{suffix}.csv')
     dfs.to_csv(outfile, header=True, index=True)
     print("Wrote to:", outfile)
 
-def main_aggregate_all_multiDS(inbase, outbase, datagroups, suffix):
+def main_aggregate_all_multiDS(inpath, outpath, suffix):
     """ multiDS: aggregagte all outputs """
-    for (data, hps) in datagroups:
-        inpath = os.path.join(inbase, f'multiDS-nonOverlap/{data}/{hps}/repeats')
-        outpath = os.path.join(outbase, f'multiDS-nonOverlap/{data}/{hps}')
-        Path(outpath).mkdir(parents=True, exist_ok=True)
-        for filename in ['accuracy_selftrain_GC.csv', 'accuracy_fedavg_GC.csv', 'accuracy_fedprox_mu0.01_GC.csv']:
+    Path(outpath).mkdir(parents=True, exist_ok=True)
+    for filename in ['accuracy_selftrain_GC.csv', 'accuracy_fedavg_GC.csv', 'accuracy_fedprox_mu0.01_GC.csv',
+                     'accuracy_gcfl_GC.csv', 'accuracy_gcflplus_GC.csv', 'accuracy_gcflplusDWs_GC.csv']:
+        _aggregate(inpath, outpath, filename)
+    if suffix != '':
+        for filename in [f'accuracy_selftrain_GC{suffix}.csv', f'accuracy_fedavg_GC{suffix}.csv', f'accuracy_fedprox_mu0.01_GC{suffix}.csv',
+                         f'accuracy_gcfl_GC{suffix}.csv', f'accuracy_gcflplus_GC{suffix}.csv', f'accuracy_gcflplusDWs_GC{suffix}.csv']:
             _aggregate(inpath, outpath, filename)
-        for filename in ['accuracy_gcfl_GC.csv', 'accuracy_gcflplus_GC.csv', 'accuracy_gcflplusDWs_GC.csv']:
-            _aggregate_cfl(inpath, outpath, filename)
-        if suffix != '':
-            for filename in [f'accuracy_selftrain_GC{suffix}.csv', f'accuracy_fedavg_GC{suffix}.csv', f'accuracy_fedprox_mu0.01_GC{suffix}.csv']:
-                _aggregate(inpath, outpath, filename)
-            for filename in [f'accuracy_gcfl_GC{suffix}.csv', f'accuracy_gcflplus_GC{suffix}.csv', f'accuracy_gcflplusDWs_GC{suffix}.csv']:
-                _aggregate_cfl(inpath, outpath, filename)
 
-    for (data, hps) in datagroups:
-        print(data, hps)
-        inpath = os.path.join(outbase, f'multiDS-nonOverlap/{data}/{hps}')
-        calc_performanceGain(inpath, "")
+    calc_performanceGain(inpath, "")
 
     """ get average performance for all algorithms """
-    for (data, hps) in datagroups:
-        inpath = os.path.join(outbase, 'multiDS-nonOverlap', data, hps)
-        average_aggregate_all(inpath, inpath, '')
+    average_aggregate_all(inpath, inpath, '')
 
-def main_aggregate_all_oneDS(inbase, outbase, datagroups, suffix):
-    for (data, hps) in datagroups:
-        inpath = os.path.join(inbase, f'{data}/{hps}/repeats')
-        outpath = os.path.join(outbase, f'{data}/{hps}')
-        Path(outpath).mkdir(parents=True, exist_ok=True)
-        for filename in ['accuracy_selftrain_GC.csv', 'accuracy_fedavg_GC.csv', 'accuracy_fedprox_mu0.01_GC.csv']:
+def main_aggregate_all_oneDS(inpath, outpath, suffix):
+    Path(outpath).mkdir(parents=True, exist_ok=True)
+    for filename in ['accuracy_selftrain_GC.csv', 'accuracy_fedavg_GC.csv', 'accuracy_fedprox_mu0.01_GC.csv',
+                     'accuracy_gcfl_GC.csv', 'accuracy_gcflplus_GC.csv', 'accuracy_gcflplusDWs_GC.csv']:
+        _aggregate(inpath, outpath, filename)
+    if suffix != '':
+        for filename in [f'accuracy_selftrain_GC{suffix}.csv', f'accuracy_fedavg_GC{suffix}.csv', f'accuracy_fedprox_mu0.01_GC{suffix}.csv',
+                         f'accuracy_gcfl_GC{suffix}.csv', f'accuracy_gcflplus_GC{suffix}.csv', f'accuracy_gcflplusDWs_GC{suffix}.csv']:
             _aggregate(inpath, outpath, filename)
-        for filename in ['accuracy_gcfl_GC.csv', 'accuracy_gcflplus_GC.csv', 'accuracy_gcflplusDWs_GC.csv']:
-            _aggregate_cfl(inpath, outpath, filename)
-        if suffix != '':
-            for filename in [f'accuracy_selftrain_GC{suffix}.csv', f'accuracy_fedavg_GC{suffix}.csv', f'accuracy_fedprox_mu0.01_GC{suffix}.csv']:
-                _aggregate(inpath, outpath, filename)
-            for filename in [f'accuracy_gcfl_GC{suffix}.csv', f'accuracy_gcflplus_GC{suffix}.csv', f'accuracy_gcflplusDWs_GC{suffix}.csv']:
-                _aggregate_cfl(inpath, outpath, filename)
 
-    for (data, hps) in datagroups:
-        print(data, hps)
-        inpath = os.path.join(outbase, f'{data}/{hps}')
-        calc_performanceGain(inpath, "")
+    calc_performanceGain(inpath, "")
 
     """ get average performance for all algorithms """
-    for (data, hps) in datagroups:
-        inpath = os.path.join(outbase, data, hps)
-        average_aggregate_all(inpath, inpath, '')
+    average_aggregate_all(inpath, inpath, '')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--inbase', type=str, default='./outputs',
-                        help='The in base path of the outputs.')
-    parser.add_argument('--outbase', type=str, default='./outputs',
-                        help='The base path for outputting.')
-    parser.add_argument('--seq_length', help='the length of the gradient norm sequence',
-                        type=int, default=5)
+    parser.add_argument('--inpath', type=str, default='./outputs',
+                        help='The input path of the experimental results.')
+    parser.add_argument('--outpath', type=str, default='./outputs',
+                        help='The out path for outputting.')
 
     try:
         args = parser.parse_args()
     except IOError as msg:
         parser.error(str(msg))
 
-
     """ multiDS: aggregagte all outputs """
-    datagroups = [('molecules', 'eps_0.07_0.28'),
-                  ('biochem', 'eps_0.07_0.35'),
-                  ('mix', 'eps_0.08_0.4')]
-    main_aggregate_all_multiDS(os.path.join(args.inbase, args.seq_length), os.path.join(args.outbase, args.seq_length), datagroups, '')
-    # main_aggregate_all_multiDS(os.path.join(args.inbase, args.seq_length), os.path.join(args.outbase, args.seq_length), datagroups, '_degrs')
+    main_aggregate_all_multiDS(args.inpath, args.outpath, '')
+    # main_aggregate_all_multiDS(args.inpath, args.outpath, '_degrs')
 
     """ oneDS: aggregagte all outputs """
-    datagroups = [('NCI1-30clients', 'eps_0.04_0.08'),
-                  ('PROTEINS-10clients', 'eps_0.03_0.06'),
-                  ('IMDB-BINARY-10clients', 'eps_0.025_0.045')]
-    main_aggregate_all_oneDS(os.path.join(args.inbase, args.seq_length), os.path.join(args.outbase, args.seq_length), datagroups, '')
-    # main_aggregate_all_oneDS(os.path.join(args.inbase, args.seq_length), os.path.join(args.outbase, args.seq_length), datagroups, '_degrs')
+    main_aggregate_all_oneDS(args.inpath, args.outpath, '')
+    # main_aggregate_all_oneDS(args.inpath, args.outpath, '_degrs')
