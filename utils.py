@@ -3,6 +3,7 @@ from torch_geometric.utils import to_networkx, degree
 import torch.nn.functional as F
 from sklearn.model_selection import train_test_split
 
+
 def convert_to_nodeDegreeFeatures(graphs):
     graph_infos = []
     maxdegree = 0
@@ -24,6 +25,16 @@ def convert_to_nodeDegreeFeatures(graphs):
         new_graphs.append(new_graph)
 
     return new_graphs
+
+def get_maxDegree(graphs):
+    maxdegree = 0
+    for i, graph in enumerate(graphs):
+        g = to_networkx(graph, to_undirected=True)
+        gdegree = max(dict(g.degree).values())
+        if gdegree > maxdegree:
+            maxdegree = gdegree
+
+    return maxdegree
 
 def use_node_attributes(graphs):
     num_node_attributes = graphs.num_node_attributes
