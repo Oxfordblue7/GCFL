@@ -119,7 +119,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--datapath', type=str, default='./data',
                         help='The input path of data.')
-    parser.add_argument('--oubase', type=str, default='./outputs',
+    parser.add_argument('--outbase', type=str, default='./outputs',
                         help='The base path for outputting.')
     parser.add_argument('--repeat', help='index of repeating;',
                         type=int, default=None)
