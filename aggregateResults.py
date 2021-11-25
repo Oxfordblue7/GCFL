@@ -59,10 +59,10 @@ def main_aggregate_all_multiDS(inpath, outpath, suffix):
                          f'accuracy_gcfl_GC{suffix}.csv', f'accuracy_gcflplus_GC{suffix}.csv', f'accuracy_gcflplusDWs_GC{suffix}.csv']:
             _aggregate(inpath, outpath, filename)
 
-    calc_performanceGain(inpath, "")
+    calc_performanceGain(outpath, "")
 
     """ get average performance for all algorithms """
-    average_aggregate_all(inpath, inpath, '')
+    average_aggregate_all(inpath, outpath, '')
 
 def main_aggregate_all_oneDS(inpath, outpath, suffix):
     Path(outpath).mkdir(parents=True, exist_ok=True)
@@ -74,15 +74,15 @@ def main_aggregate_all_oneDS(inpath, outpath, suffix):
                          f'accuracy_gcfl_GC{suffix}.csv', f'accuracy_gcflplus_GC{suffix}.csv', f'accuracy_gcflplusDWs_GC{suffix}.csv']:
             _aggregate(inpath, outpath, filename)
 
-    calc_performanceGain(inpath, "")
+    calc_performanceGain(outpath, "")
 
     """ get average performance for all algorithms """
-    average_aggregate_all(inpath, inpath, '')
+    average_aggregate_all(inpath, outpath, '')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--inpath', type=str, default='./outputs',
+    parser.add_argument('--inpath', type=str, default='./outputs/repeats',
                         help='The input path of the experimental results.')
     parser.add_argument('--outpath', type=str, default='./outputs',
                         help='The out path for outputting.')
