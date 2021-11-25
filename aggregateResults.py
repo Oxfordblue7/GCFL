@@ -33,14 +33,14 @@ def calc_performanceGain(inpath, suffix):
         df_stats.loc[algo, 'min_performanceGain'] = df_diff.min().values[0]
         df_stats.loc[algo, 'perc_improved'] = df_diff[df_diff['test_acc_mean'] >= 0].count().values[0] * 1. / len(df_diff)
         df_stats.loc[algo, 'ratio'] = '{}/{}'.format(df_diff[df_diff['test_acc_mean'] >= 0].count().values[0], len(df_diff))
-    print(f"Performance Gain:\ndf_stats")
+    print(f"Performance Gain:\n{df_stats}")
     df_stats.to_csv(os.path.join(inpath, f"stats_performanceGain_GC{suffix}.csv"), header=True, index=True)
 
-def average_aggregate_all(inpath, outpath, suffix):
-    algos = ['selftrain', 'fedavg', 'fedprox_mu0.01', 'gcfl', 'gcflplus', 'gcflDWs']
+def average_aggregate_all(outpath, suffix):
+    algos = ['selftrain', 'fedavg', 'fedprox_mu0.01', 'gcfl', 'gcflplus', 'gcflplusDWs']
     dfs = pd.DataFrame(index=algos, columns=['avg. of test_accuracy_mean', 'avg. of test_accuracy_std'])
     for algo in algos:
-        df = pd.read_csv(os.path.join(inpath, f'accuracy_{algo}_GC{suffix}.csv'), header=0, index_col=0)
+        df = pd.read_csv(os.path.join(outpath, f'accuracy_{algo}_GC{suffix}.csv'), header=0, index_col=0)
         if algo == 'selftrain':
             df = df[['test_acc_mean', 'test_acc_std']]
         dfs.loc[algo] = list(df.mean())
@@ -62,7 +62,7 @@ def main_aggregate_all_multiDS(inpath, outpath, suffix):
     calc_performanceGain(outpath, "")
 
     """ get average performance for all algorithms """
-    average_aggregate_all(inpath, outpath, '')
+    average_aggregate_all(outpath, '')
 
 def main_aggregate_all_oneDS(inpath, outpath, suffix):
     Path(outpath).mkdir(parents=True, exist_ok=True)
@@ -77,7 +77,7 @@ def main_aggregate_all_oneDS(inpath, outpath, suffix):
     calc_performanceGain(outpath, "")
 
     """ get average performance for all algorithms """
-    average_aggregate_all(inpath, outpath, '')
+    average_aggregate_all(outpath, '')
 
 
 if __name__ == '__main__':
@@ -86,16 +86,22 @@ if __name__ == '__main__':
                         help='The input path of the experimental results.')
     parser.add_argument('--outpath', type=str, default='./outputs',
                         help='The out path for outputting.')
+    parser.add_argument('--data_partition', type=str, default='multiDS',
+                        help='The data partition mechanism.')
 
     try:
         args = parser.parse_args()
     except IOError as msg:
         parser.error(str(msg))
 
-    """ multiDS: aggregagte all outputs """
-    main_aggregate_all_multiDS(args.inpath, args.outpath, '')
-    # main_aggregate_all_multiDS(args.inpath, args.outpath, '_degrs')
+    assert args.data_partition in ['oneDS', 'multiDS']
 
-    """ oneDS: aggregagte all outputs """
-    main_aggregate_all_oneDS(args.inpath, args.outpath, '')
-    # main_aggregate_all_oneDS(args.inpath, args.outpath, '_degrs')
+    if args.data_partition == 'multiDS':
+        """ multiDS: aggregagte all outputs """
+        main_aggregate_all_multiDS(args.inpath, args.outpath, '')
+        # main_aggregate_all_multiDS(args.inpath, args.outpath, '_degrs')
+
+    if args.data_partition == 'oneDS':
+        """ oneDS: aggregagte all outputs """
+        main_aggregate_all_oneDS(args.inpath, args.outpath, '')
+        # main_aggregate_all_oneDS(args.inpath, args.outpath, '_degrs')
