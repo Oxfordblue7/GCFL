@@ -59,7 +59,7 @@ def main_aggregate_all_multiDS(inpath, outpath, suffix):
                          f'accuracy_gcfl_GC{suffix}.csv', f'accuracy_gcflplus_GC{suffix}.csv', f'accuracy_gcflplusDWs_GC{suffix}.csv']:
             _aggregate(inpath, outpath, filename)
 
-    calc_performanceGain(outpath, "")
+    calc_performanceGain(inpath, "")
 
     """ get average performance for all algorithms """
     average_aggregate_all(inpath, inpath, '')
@@ -74,7 +74,7 @@ def main_aggregate_all_oneDS(inpath, outpath, suffix):
                          f'accuracy_gcfl_GC{suffix}.csv', f'accuracy_gcflplus_GC{suffix}.csv', f'accuracy_gcflplusDWs_GC{suffix}.csv']:
             _aggregate(inpath, outpath, filename)
 
-    calc_performanceGain(outpath, "")
+    calc_performanceGain(inpath, "")
 
     """ get average performance for all algorithms """
     average_aggregate_all(inpath, inpath, '')
