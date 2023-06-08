@@ -51,6 +51,13 @@ class Server():
         c1 = np.array([idc[x] for x in partition[0]])
         c2 = np.array([idc[x] for x in partition[1]])
         return c1, c2
+    
+    # def cluster_clients(self, S, idc):
+    #     clustering = AgglomerativeClustering(affinity="precomputed", linkage="complete").fit(-S)
+    #     # print(clustering.labels_)
+    #     c1 = np.array([idc[x] for x in np.argwhere(clustering.labels_ == 0).flatten()])
+    #     c2 = np.array([idc[x] for x in np.argwhere(clustering.labels_ == 1).flatten()])
+    #     return c1, c2
 
     def aggregate_clusterwise(self, client_clusters):
         for cluster in client_clusters:
